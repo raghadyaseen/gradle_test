@@ -57,10 +57,6 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications_outlined, color: Colors.black),
-            onPressed: () {},
-          ),
-          IconButton(
             icon: Icon(Icons.call_outlined, color: Colors.black),
             onPressed: () {},
           ),
@@ -70,26 +66,13 @@ class HomeScreen extends StatelessWidget {
         color: backgroundColor,
         child: Column(
           children: [
-            // Search Bar
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: '...ابحث في صنعيتي',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-            ),
+            // Banner Section with Carousel
+            BannerCarousel(banners: banners),
             // Expanded content with scrolling
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Banner Section with Carousel
-                    BannerCarousel(banners: banners),
                     // Categories Section
                     GridView.builder(
                       shrinkWrap: true,
@@ -134,64 +117,15 @@ class HomeScreen extends StatelessWidget {
         unselectedItemColor: Colors.black54,
         items: [
           BottomNavigationBarItem(
+            icon:
+                Icon(Icons.notifications_outlined, color: Colors.grey.shade600),
+            activeIcon: Icon(Icons.notifications, color: Colors.orange),
+            label: 'الإشعارات',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined, color: Colors.grey.shade600),
             activeIcon: Icon(Icons.home_filled, color: Colors.orange),
             label: 'الرئيسية',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline, color: Colors.grey.shade600),
-            activeIcon: Icon(Icons.chat_bubble, color: Color(0xFF0084FF)),
-            label: 'الدردشة',
-          ),
-          BottomNavigationBarItem(
-            icon: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.orange.withOpacity(0.4),
-                    blurRadius: 12,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child:
-                  const Icon(Icons.add_rounded, color: Colors.white, size: 30),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined, color: Colors.grey.shade600),
-            activeIcon: Stack(
-              children: [
-                const Icon(Icons.dashboard_rounded, color: Colors.orange),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: Icon(Icons.square, color: Colors.blue, size: 10),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child:
-                      const Icon(Icons.square, color: Colors.orange, size: 10),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  child:
-                      const Icon(Icons.square, color: Colors.purple, size: 10),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Icon(Icons.square, color: Colors.red, size: 10),
-                ),
-              ],
-            ),
-            label: 'إعلاناتي',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline, color: Colors.grey.shade600),
@@ -228,6 +162,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+// باقي الكود كما هو
 class BannerCarousel extends StatefulWidget {
   final List<String> banners;
 
@@ -613,7 +548,9 @@ class _ShopCardState extends State<ShopCard> {
   }
 
   void openWhatsApp() async {
-    const url = "https://wa.me/"; // ضع هنا رقم الهاتف إن أردت مباشرة
+    const phoneNumber = "+962790615563"; // ضع هنا رقم الهاتف المطلوب
+    final url = "https://wa.me/$phoneNumber";
+
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
@@ -669,8 +606,7 @@ class _ShopCardState extends State<ShopCard> {
                 Text("$favoriteCount"),
                 IconButton(
                   icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
-                  onPressed:
-                      openWhatsApp, // استبدل هذا بالدالة التي ترغب بتنفيذها
+                  onPressed: openWhatsApp,
                 ),
                 IconButton(
                   icon: Icon(Icons.call),

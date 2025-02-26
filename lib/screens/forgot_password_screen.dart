@@ -16,6 +16,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         elevation: 0,
         title: const Text(
           "Forgot Password",
+          //
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

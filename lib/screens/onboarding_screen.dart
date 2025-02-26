@@ -31,7 +31,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "image": "assets/onboarding3.png",
     },
   ];
-
+//
   void _onPageChanged(int index) {
     setState(() {
       _currentPage = index;

@@ -16,6 +16,7 @@ class _SignUpState extends State<SignUp> {
         elevation: 0,
         title: const Text(
           "",
+          //
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
