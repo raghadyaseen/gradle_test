@@ -1,0 +1,21 @@
+- users : 
+- user_type : [admin,user]
+
+button within bottom nav bar 
+if (username == admin ){
+    show dashboard(); 
+
+}else {
+    Empty()
+}
+
+
+ - single_post : 
+    - postid
+    - post_name 
+    - post_type [حداد ، نجار ، الخ ]
+    - mobile num 
+    - personal image 
+    - work image 
+    - description 
+    - favorites 

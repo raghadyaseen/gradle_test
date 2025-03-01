@@ -1,52 +1,50 @@
 import 'package:flutter/material.dart';
+import 'details_page.dart'; // تأكد من استيراد تفاصيل الصفحة هنا
+import 'shop_card.dart'; // تأكد من استيراد ShopCard هنا
 
-class CategoryDetailsPage extends StatelessWidget {
+class CategoryDetails extends StatelessWidget {
   final String title;
-  final String image;
-  final String description;
+  final String imagePath;
 
-  CategoryDetailsPage(
-      {required this.title, required this.image, required this.description});
+  CategoryDetails({required this.title, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title, style: TextStyle(color: Colors.black)),
         backgroundColor: const Color.fromARGB(255, 254, 249, 241),
+        elevation: 0,
+        centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 20),
-          Image.asset(image, width: 150, height: 150),
-          SizedBox(height: 20),
-          Text(
-            title,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
           ),
-          SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              description,
-              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepOrange,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            ),
-            onPressed: () {
-              // تنفيذ أي أكشن إضافي هنا
-            },
-            child: Text("طلب خدمة"),
-          ),
-        ],
+          itemCount: 20, // عدد العناصر في الشبكة
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailsPage(
+                      title: '$title - عنصر $index', // يمكنك تخصيص العنوان
+                      imagePath: 'assets/shop1_1.png', // استخدم مسار الصورة
+                    ),
+                  ),
+                );
+              },
+              child: ShopCard(
+                title: 'عنوان العنصر $index', // تمرير عنوان لكل عنصر
+                imagePath: 'assets/shop1_1.png', // استخدم مسار الصورة
+              ),
+            );
+          },
+        ),
       ),
     );
   }

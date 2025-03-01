@@ -1,15 +1,165 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// ignore: depend_on_referenced_packages
 import 'package:url_launcher/url_launcher.dart';
 
+import 'notifications_screen.dart';
+import 'help_section.dart';
+import 'category_details.dart';
+import 'details_page.dart';
+
+// ============== شاشة الملف الشخصي للمستخدم (UserProfileScreen) ==============
+class UserProfileScreen extends StatefulWidget {
+  const UserProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _UserProfileScreenState createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  bool _notificationsEnabled = true;
+  bool _darkModeEnabled = false;
+  String _userName = 'اسم المستخدم';
+  String _language = 'العربية';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('حسابي', style: TextStyle(color: Colors.black)),
+        backgroundColor: const Color.fromARGB(255, 254, 249, 241),
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // صورة البروفايل
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage('assets/user_avatar.png'),
+              // ضع أي صورة لديك أو صورة افتراضية
+            ),
+            SizedBox(height: 16),
+            // زر تعديل الاسم
+            TextButton(
+              onPressed: () => _showEditNameDialog(),
+              child: Text(
+                'Edit Name',
+                style: TextStyle(fontSize: 18, color: Colors.deepOrange),
+              ),
+            ),
+            SizedBox(height: 24),
+
+            // إعدادات الحساب
+            ListTile(
+              leading: Icon(Icons.settings, color: Colors.black),
+              title: Text('معلومات الحساب'),
+              trailing: Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                // يمكنك فتح صفحة أخرى تعرض معلومات تفصيلية
+                // أو إبقاءه فارغاً حالياً
+              },
+            ),
+            Divider(),
+
+            // تفعيل الإشعارات
+            SwitchListTile(
+              title: Text('Show notifications'),
+              value: _notificationsEnabled,
+              onChanged: (bool value) {
+                setState(() {
+                  _notificationsEnabled = value;
+                });
+              },
+              activeColor: Colors.deepOrange,
+            ),
+            Divider(),
+
+            // تفعيل الوضع الليلي (مثال)
+            SwitchListTile(
+              title: Text('الوضع الليلي'),
+              value: _darkModeEnabled,
+              onChanged: (bool value) {
+                setState(() {
+                  _darkModeEnabled = value;
+                });
+              },
+              activeColor: Colors.deepOrange,
+            ),
+            Divider(),
+
+            // تغيير اللغة
+            ListTile(
+              leading: Icon(Icons.language, color: Colors.black),
+              title: Text('اللغة'),
+              trailing: DropdownButton<String>(
+                value: _language,
+                items: <String>['العربية', 'English'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    if (newValue != null) {
+                      _language = newValue;
+                    }
+                  });
+                },
+              ),
+            ),
+            Divider(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEditNameDialog() {
+    final TextEditingController _nameController =
+        TextEditingController(text: _userName);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('تعديل الاسم'),
+          content: TextField(
+            controller: _nameController,
+            decoration: InputDecoration(labelText: 'اسم المستخدم'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('إلغاء'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _userName = _nameController.text;
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('حفظ'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ============== نقطة البداية في التطبيق ==============
 void main() {
   runApp(MyApp());
 }
 
+// ============== التطبيق الرئيسي (MyApp) ==============
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -23,7 +173,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+// ============== الشاشة الرئيسية (HomeScreen) ==============
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 1;
+
   final List<Map<String, String>> categories = [
     {'title': 'حداد', 'image': 'assets/hdad.png'},
     {'title': 'سباك', 'image': 'assets/spak.png'},
@@ -57,8 +215,13 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.call_outlined, color: Colors.black),
-            onPressed: () {},
+            icon: Icon(Icons.notifications_outlined, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationsScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -78,13 +241,14 @@ class HomeScreen extends StatelessWidget {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, // 3 containers per row
-                        childAspectRatio: 1, // Square shape
+                        crossAxisCount: 3,
+                        childAspectRatio: 1,
                       ),
                       itemCount: categories.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
+                            // فتح صفحة تفاصيل الفئة عند النقر
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -115,25 +279,36 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 254, 249, 241),
         selectedItemColor: Colors.deepOrange,
         unselectedItemColor: Colors.black54,
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          // التعديل هنا: الانتقال لصفحة الحساب الشخصي
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserProfileScreen()),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HelpSection()),
+            );
+          }
+        },
         items: [
           BottomNavigationBarItem(
-            icon:
-                Icon(Icons.notifications_outlined, color: Colors.grey.shade600),
-            activeIcon: Icon(Icons.notifications, color: Colors.orange),
-            label: 'الإشعارات',
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'حسابي',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined, color: Colors.grey.shade600),
-            activeIcon: Icon(Icons.home_filled, color: Colors.orange),
+            icon: Icon(Icons.home_outlined),
             label: 'الرئيسية',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline, color: Colors.grey.shade600),
-            activeIcon: CircleAvatar(
-              backgroundColor: Colors.blue,
-              child: Icon(Icons.person_rounded, color: Colors.grey.shade300),
-            ),
-            label: 'حسابي',
+            icon: Icon(Icons.help_outline),
+            label: 'المساعدة',
           ),
         ],
       ),
@@ -162,7 +337,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// باقي الكود كما هو
+// ============== BannerCarousel ==============
 class BannerCarousel extends StatefulWidget {
   final List<String> banners;
 
@@ -175,6 +350,7 @@ class BannerCarousel extends StatefulWidget {
 class _BannerCarouselState extends State<BannerCarousel> {
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
+
   @override
   void initState() {
     super.initState();
@@ -223,6 +399,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
   }
 }
 
+// ============== أيقونة الـ ChatBot العائمة ==============
 class AnimatedBotIcon extends StatefulWidget {
   const AnimatedBotIcon({super.key});
 
@@ -283,6 +460,7 @@ class _AnimatedBotIconState extends State<AnimatedBotIcon>
   }
 }
 
+// ============== شاشة الـ ChatBot ==============
 class SanaatyBotScreen extends StatefulWidget {
   @override
   State<SanaatyBotScreen> createState() => _SanaatyBotScreenState();
@@ -495,6 +673,7 @@ class _SanaatyBotScreenState extends State<SanaatyBotScreen> {
   }
 }
 
+// ============== صفحة تفاصيل الفئة (CategoryDetails) ==============
 class CategoryDetails extends StatelessWidget {
   final String title;
   final String imagePath;
@@ -517,7 +696,7 @@ class CategoryDetails extends StatelessWidget {
             crossAxisCount: 2,
             childAspectRatio: 0.8,
           ),
-          itemCount: 20, // 20 عنصر في الشبكة
+          itemCount: 20,
           itemBuilder: (context, index) {
             return ShopCard();
           },
@@ -527,6 +706,7 @@ class CategoryDetails extends StatelessWidget {
   }
 }
 
+// ============== بطاقة متجر (ShopCard) ==============
 class ShopCard extends StatefulWidget {
   @override
   _ShopCardState createState() => _ShopCardState();
@@ -548,7 +728,7 @@ class _ShopCardState extends State<ShopCard> {
   }
 
   void openWhatsApp() async {
-    const phoneNumber = "+962790615563"; // ضع هنا رقم الهاتف المطلوب
+    const phoneNumber = "+962790615563";
     final url = "https://wa.me/$phoneNumber";
 
     if (await canLaunchUrl(Uri.parse(url))) {
