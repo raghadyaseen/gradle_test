@@ -5,10 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'notifications_screen.dart';
-import 'help_section.dart';
-import 'category_details.dart';
-import 'details_page.dart';
+import '../Notifications_Screen.dart';
+import '../help_section.dart';
+import '../category_details.dart';
+import '../details_page.dart';
 
 // ============== شاشة الملف الشخصي للمستخدم (UserProfileScreen) ==============
 class UserProfileScreen extends StatefulWidget {
@@ -41,7 +41,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             CircleAvatar(
               radius: 50,
               backgroundImage: AssetImage('assets/user_avatar.png'),
-              // ضع أي صورة لديك أو صورة افتراضية
             ),
             SizedBox(height: 16),
             // زر تعديل الاسم
@@ -163,12 +162,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sanaaty Bot',
-      theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: Image.asset(
+          'assets/logochatbot.png',
+          height: 40,
+        ),
       ),
-      home: HomeScreen(),
     );
   }
 }

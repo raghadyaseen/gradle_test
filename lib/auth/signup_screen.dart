@@ -32,7 +32,7 @@ class _SignUpState extends State<SignUp> {
           children: [
             const SizedBox(height: 20),
             Image.asset(
-              "assets/signup.png",
+              "assets/logo2.png",
               width: 200,
               height: 200,
             ),
