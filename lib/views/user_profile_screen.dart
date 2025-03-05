@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'home/accountinfoscreen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _UserProfileScreenState createState() => _UserProfileScreenState();
 }
 
@@ -17,91 +19,77 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('حسابي', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color.fromARGB(255, 254, 249, 241),
+        title: const Text('حسابي', style: TextStyle(color: Colors.black)),
+        backgroundColor: const Color(0xFFFEF9F1),
         elevation: 0,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // صورة البروفايل
-            CircleAvatar(
+            const CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage('assets/user_avatar.png'),
-              // ضع أي صورة لديك أو صورة افتراضية
+              backgroundImage: AssetImage('assets/blet.png'),
             ),
-            SizedBox(height: 16),
-            // زر تعديل الاسم
+            const SizedBox(height: 16),
             TextButton(
-              onPressed: () => _showEditNameDialog(),
-              child: Text(
-                'Edit Name',
+              onPressed: _showEditNameDialog,
+              child: const Text(
+                'تعديل الاسم',
                 style: TextStyle(fontSize: 18, color: Colors.deepOrange),
               ),
             ),
-            SizedBox(height: 24),
-
-            // إعدادات الحساب
+            const SizedBox(height: 24),
             ListTile(
-              leading: Icon(Icons.settings, color: Colors.black),
-              title: Text('معلومات الحساب'),
-              trailing: Icon(Icons.arrow_forward_ios, size: 16),
+              leading: const Icon(Icons.settings, color: Colors.black),
+              title: const Text('معلومات الحساب'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
-                // يمكنك فتح صفحة أخرى تعرض معلومات تفصيلية
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => const AccountInfoScreen()),
+                );
               },
             ),
-            Divider(),
-
-            // تفعيل الإشعارات
+            const Divider(),
             SwitchListTile(
-              title: Text('Show notifications'),
+              title: const Text('إشعارات'),
               value: _notificationsEnabled,
               onChanged: (bool value) {
-                setState(() {
-                  _notificationsEnabled = value;
-                });
+                setState(() => _notificationsEnabled = value);
               },
               activeColor: Colors.deepOrange,
             ),
-            Divider(),
-
-            // تفعيل الوضع الليلي (مثال)
+            const Divider(),
             SwitchListTile(
-              title: Text('الوضع الليلي'),
+              title: const Text('الوضع الليلي'),
               value: _darkModeEnabled,
               onChanged: (bool value) {
-                setState(() {
-                  _darkModeEnabled = value;
-                });
+                setState(() => _darkModeEnabled = value);
               },
               activeColor: Colors.deepOrange,
             ),
-            Divider(),
-
-            // تغيير اللغة
+            const Divider(),
             ListTile(
-              leading: Icon(Icons.language, color: Colors.black),
-              title: Text('اللغة'),
+              leading: const Icon(Icons.language, color: Colors.black),
+              title: const Text('اللغة'),
               trailing: DropdownButton<String>(
                 value: _language,
-                items: <String>['العربية', 'English'].map((String value) {
+                items: ['العربية', 'English'].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
-                  setState(() {
-                    if (newValue != null) {
-                      _language = newValue;
-                    }
-                  });
+                  if (newValue != null) {
+                    setState(() => _language = newValue);
+                  }
                 },
               ),
             ),
-            Divider(),
+            const Divider(),
           ],
         ),
       ),
@@ -109,6 +97,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _showEditNameDialog() {
+    // ignore: no_leading_underscores_for_local_identifiers
     final TextEditingController _nameController =
         TextEditingController(text: _userName);
 
@@ -116,24 +105,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('تعديل الاسم'),
+          title: const Text('تعديل الاسم'),
           content: TextField(
             controller: _nameController,
-            decoration: InputDecoration(labelText: 'اسم المستخدم'),
+            decoration: const InputDecoration(labelText: 'اسم المستخدم'),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('إلغاء'),
+              child: const Text('إلغاء'),
             ),
             TextButton(
               onPressed: () {
-                setState(() {
-                  _userName = _nameController.text;
-                });
+                setState(() => _userName = _nameController.text);
                 Navigator.of(context).pop();
               },
-              child: Text('حفظ'),
+              child: const Text('حفظ'),
             ),
           ],
         );

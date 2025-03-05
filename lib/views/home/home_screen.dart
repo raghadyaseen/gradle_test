@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+//import 'accountinfoscreen.dart';
 import '../Notifications_Screen.dart';
 import '../help_section.dart';
-import '../category_details.dart';
-import '../details_page.dart';
+//import '../category_details.dart';
+//import '../details_page.dart';
 
 // ============== شاشة الملف الشخصي للمستخدم (UserProfileScreen) ==============
 class UserProfileScreen extends StatefulWidget {
