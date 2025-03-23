@@ -1,12 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gradle_test/views/home/cat.dart' show FetchDataPage;
+import 'package:gradle_test/views/home/current_user.dart' show UserPagee;
+import 'package:gradle_test/views/home/upload_w.dart'
+    show UploadWork, upload_work;
+import 'package:gradle_test/views/home/user_pagee.dart' show UserPage;
+import 'package:gradle_test/views/home/works_detialies.dart'
+    show WorksDetails, WorksDetialiess;
 import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 //import 'accountinfoscreen.dart';
-import '../Notifications_Screen.dart';
-import '../help_section.dart';
 //import '../category_details.dart';
 //import '../details_page.dart';
 
@@ -184,21 +190,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 1;
-
-  final List<Map<String, String>> categories = [
-    {'title': 'حداد', 'image': 'assets/hdad.png'},
-    {'title': 'سباك', 'image': 'assets/spak.png'},
-    {'title': 'ميكانيكي', 'image': 'assets/mek.png'},
-    {'title': 'نجار', 'image': 'assets/najar.png'},
-    {'title': 'بليط', 'image': 'assets/blet.png'},
-    {'title': 'عامِلات منزلية', 'image': 'assets/clean.png'},
-    {'title': 'دهّين', 'image': 'assets/dhen.png'},
-    {'title': 'كهربائي', 'image': 'assets/kk.png'},
-    {'title': 'عمال نقل', 'image': 'assets/nakel.png'},
-    {'title': 'عمال صيانة', 'image': 'assets/siana.png'},
-    {'title': 'عمال بناء', 'image': 'assets/banaa.png'},
+  final List<Map<String, dynamic>> categories = [
+    {'id': '1', 'title': 'حداد', 'image': 'assets/hdad.png'},
+    {'id': '2', 'title': 'سباك', 'image': 'assets/spak.png'},
+    {'id': '3', 'title': 'ميكانيكي', 'image': 'assets/mek.png'},
+    {'id': '4', 'title': 'نجار', 'image': 'assets/najar.png'},
+    {'id': '5', 'title': 'بليط', 'image': 'assets/blet.png'},
+    {'id': '6', 'title': 'عامِلات منزلية', 'image': 'assets/clean.png'},
+    {'id': '7', 'title': 'دهّين', 'image': 'assets/dhen.png'},
+    {'id': '8', 'title': 'كهربائي', 'image': 'assets/kk.png'},
+    {'id': '9', 'title': 'عمال نقل', 'image': 'assets/nakel.png'},
+    {'id': '10', 'title': 'عمال صيانة', 'image': 'assets/siana.png'},
+    {'id': '11', 'title': 'عمال بناء', 'image': 'assets/banaa.png'},
   ];
-
   final Color backgroundColor =
       const Color.fromARGB(255, 254, 249, 241).withOpacity(0.8);
 
@@ -216,17 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color.fromARGB(255, 254, 249, 241),
         elevation: 0,
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications_outlined, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationsScreen()),
-              );
-            },
-          ),
-        ],
       ),
       body: Container(
         color: backgroundColor,
@@ -256,6 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CategoryDetails(
+                                  id: categories[index]['id'],
                                   title: categories[index]['title']!,
                                   imagePath: categories[index]['image']!,
                                 ),
@@ -291,27 +285,35 @@ class _HomeScreenState extends State<HomeScreen> {
           if (index == 0) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => UserProfileScreen()),
+              MaterialPageRoute(builder: (context) => UserPagee()),
             );
-          } else if (index == 2) {
+          }
+          //===========================================================================================================================
+
+          //===========================================================================================================================
+
+          //===========================================================================================================================
+          //
+          //===========================================================================================================================
+          else if (index == 2) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HelpSection()),
+              MaterialPageRoute(builder: (context) => FetchDataPage()),
             );
           }
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined),
+            icon: Icon(Icons.account_circle_rounded), // شكل دائري أكثر حداثة
             label: 'حسابي',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'الرئيسية',
+            icon: Icon(Icons.home_rounded), // أيقونة ممتلئة ومستديرة أكثر حداثة
+            label: 'الرئيسية',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.help_outline),
-            label: 'المساعدة',
+            icon: Icon(Icons.add_a_photo_rounded), // أيقونة أحدث لإضافة عمل
+            label: 'إضافة عمل',
           ),
         ],
       ),
@@ -675,42 +677,108 @@ class _SanaatyBotScreenState extends State<SanaatyBotScreen> {
     );
   }
 }
+//===========================================================================================================
 
+//===========================================================================================================
+//===========================================================================================================
+//===========================================================================================================
+//===========================================================================================================
+//===========================================================================================================
 // ============== صفحة تفاصيل الفئة (CategoryDetails) ==============
-class CategoryDetails extends StatelessWidget {
+class CategoryDetails extends StatefulWidget {
   final String title;
   final String imagePath;
+  final String id;
 
-  CategoryDetails({required this.title, required this.imagePath});
+  CategoryDetails(
+      {required this.title, required this.imagePath, required this.id});
+
+  @override
+  _CategoryDetailsState createState() => _CategoryDetailsState();
+}
+
+class _CategoryDetailsState extends State<CategoryDetails> {
+  List<DocumentSnapshot> documents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData(); // استدعاء دالة fetchData عند تحميل الصفحة
+  }
+
+  // دالة لجلب البيانات من كولكشن works حيث القيمة cid تساوي id
+  Future<void> fetchData() async {
+    try {
+      // استعلام لجلب المستندات من كولكشن works حيث cid يساوي id
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('works') // تأكد من أن هذا هو اسم الكولكشن الصحيح
+          .where('cid', isEqualTo: widget.id) // تصفية المستندات حيث cid = id
+          .get();
+
+      setState(() {
+        documents = snapshot.docs; // تحديث قائمة المستندات
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title, style: TextStyle(color: Colors.black)),
+        title: Text(widget.title, style: TextStyle(color: Colors.black)),
         backgroundColor: const Color.fromARGB(255, 254, 249, 241),
         elevation: 0,
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-          ),
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            return ShopCard();
-          },
-        ),
+        child: documents.isEmpty
+            ? Center(
+                child:
+                    CircularProgressIndicator()) // عرض مؤشر التحميل إذا كانت البيانات فارغة
+            : GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount:
+                    documents.length, // استخدم documents.length بدلاً من 20
+                itemBuilder: (context, index) {
+                  // استخراج بيانات كل مستند لتمريرها إلى ShopCard
+                  var data = documents[index];
+                  return ShopCard(
+                      name: data['w_name'] ?? 'No Name',
+                      imageUrl:
+                          'assets/placeholder.png', // افترض أن w_image هو الاسم الصحيح للحقل
+                      description: data['w_disc'] ?? 'No description available',
+                      phoneNumber: data['p_num'] ?? 'No phone number available',
+                      uiddd: data
+                          .id // إرسال documentId (الـ uid المولد من Firebase)
+                      );
+                },
+              ),
       ),
     );
   }
 }
 
-// ============== بطاقة متجر (ShopCard) ==============
 class ShopCard extends StatefulWidget {
+  final String name;
+  final String imageUrl;
+  final String description;
+  final String phoneNumber;
+  final String uiddd; // استلام الـ documentId (الـ uid المولد)
+
+  ShopCard({
+    required this.name,
+    required this.imageUrl,
+    required this.description,
+    required this.phoneNumber,
+    required this.uiddd,
+  });
+
   @override
   _ShopCardState createState() => _ShopCardState();
 }
@@ -731,11 +799,9 @@ class _ShopCardState extends State<ShopCard> {
   }
 
   void openWhatsApp() async {
-    const phoneNumber = "+962790615563";
-    final url = "https://wa.me/$phoneNumber";
-
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
+    final url = "https://wa.me/${widget.phoneNumber}";
+    if (await canLaunch(url)) {
+      await launch(url);
     } else {
       throw "لا يمكن فتح WhatsApp";
     }
@@ -745,18 +811,9 @@ class _ShopCardState extends State<ShopCard> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("الوصف"),
-          content: Text("هذا هو وصف العنصر."),
-          actions: [
-            TextButton(
-              child: Text("إغلاق"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        return WorksDetails(
+          uiddd: widget.uiddd,
+        ); // الآن يتم إرسال الـ documentId
       },
     );
   }
@@ -770,10 +827,17 @@ class _ShopCardState extends State<ShopCard> {
         child: Column(
           children: [
             Expanded(
-              child: Image.asset(
-                'assets/shop1_1.png',
+              child: Image.network(
+                widget.imageUrl,
                 fit: BoxFit.cover,
                 width: double.infinity,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.name,
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             Row(
@@ -798,7 +862,7 @@ class _ShopCardState extends State<ShopCard> {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text('اتصال'),
-                        content: Text('0791523759'),
+                        content: Text(widget.phoneNumber),
                         actions: [
                           TextButton(
                             onPressed: () {

@@ -1,5 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'forgot_password_screen.dart';
 import '../views/home/home_screen.dart';
 import 'signup_screen.dart';
@@ -13,6 +13,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   bool _obscurePassword = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +74,9 @@ class _LoginPage extends State<LoginPage> {
 
   Widget _buildPhoneNumberField() {
     return TextField(
+      controller: _emailController,
       decoration: InputDecoration(
-        labelText: "Phone Number",
+        labelText: "Email",
         labelStyle: const TextStyle(color: Colors.grey, fontSize: 18),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -88,18 +92,15 @@ class _LoginPage extends State<LoginPage> {
             width: 2,
           ),
         ),
-        prefixIcon: const Icon(Icons.phone, color: Colors.grey),
-        prefix: const Text(
-          "+962 ",
-          style: TextStyle(color: Colors.black, fontSize: 18),
-        ),
+        prefixIcon: const Icon(Icons.email, color: Colors.grey),
       ),
-      keyboardType: TextInputType.phone,
+      keyboardType: TextInputType.emailAddress,
     );
   }
 
   Widget _buildPasswordField() {
     return TextField(
+      controller: _passwordController,
       obscureText: _obscurePassword,
       decoration: InputDecoration(
         labelText: "Password",
@@ -159,11 +160,39 @@ class _LoginPage extends State<LoginPage> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-          );
+        onPressed: () async {
+          String email = _emailController.text;
+          String password = _passwordController.text;
+
+          if (email.isEmpty || password.isEmpty) {
+            // عرض رسالة خطأ في حال كانت الحقول فارغة
+            _showErrorMessage("Please enter both email and password.");
+            return;
+          }
+
+          try {
+            // محاولة تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
+            UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+              email: email,
+              password: password,
+            );
+
+            // في حال نجاح تسجيل الدخول
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          } on FirebaseAuthException catch (e) {
+            // في حال حدوث خطأ في تسجيل الدخول
+            String errorMessage = "An error occurred. Please try again.";
+            if (e.code == 'user-not-found') {
+              errorMessage = "No user found for that email.";
+            } else if (e.code == 'wrong-password') {
+              errorMessage = "Incorrect password provided.";
+            }
+
+            _showErrorMessage(errorMessage);
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromARGB(255, 232, 143, 60),
@@ -180,7 +209,27 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-//
+  // تابع لعرض رسالة الخطأ
+  void _showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildDivider() {
     return Row(
       children: const [

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'onboarding/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart'; // استيراد حزمة firebase_core
+import 'package:gradle_test/views/home/home_screen.dart';
+import 'onboarding/splash_screen.dart'; // شاشة البداية الخاصة بك
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // تأكيد تهيئة الفلاتر قبل التشغيل
+  await Firebase.initializeApp(); // تهيئة Firebase
+
+  runApp(const MyApp()); // تشغيل التطبيق بعد التهيئة
 }
 
 class MyApp extends StatelessWidget {
@@ -12,9 +17,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sanaaty',
-      debugShowCheckedModeBanner: false, // هنا تعيين هذه الخاصية إلى false
-      home: const SplashScreen(),
+      debugShowCheckedModeBanner: false, // إخفاء الشريط العلوي
+      theme: ThemeData(fontFamily: 'Aljazeera.ttf' //لخط العربي
+
+          ),
+      home: SplashScreen(), // شاشة البداية التي قمت بإنشائها
     );
   }
 }
-//

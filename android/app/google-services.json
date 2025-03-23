@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "882794871719",
+    "project_id": "sanaaty-d7c45",
+    "storage_bucket": "sanaaty-d7c45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882794871719:android:823160cfe1202a81c91482",
+        "android_client_info": {
+          "package_name": "com.example.gradle_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiSZHDUrjwFomTDVuWQ_IBYCJACrPYVvA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
