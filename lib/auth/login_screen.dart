@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // إضافة الحزمة
 import 'forgot_password_screen.dart';
 import '../views/home/home_screen.dart';
 import 'signup_screen.dart';
@@ -16,6 +17,49 @@ class _LoginPage extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus(); // التحقق من حالة المستخدم عند بدء التطبيق
+  }
+
+  // دالة للتحقق من حالة المستخدم عند بدء التطبيق
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userEmail = prefs.getString('userEmail');
+    String? userPassword = prefs.getString('userPassword');
+    
+    // إذا كانت البيانات موجودة، حاول تسجيل الدخول تلقائيًا
+    if (userEmail != null && userPassword != null) {
+      _emailController.text = userEmail;
+      _passwordController.text = userPassword;
+      
+      // حاول تسجيل الدخول تلقائيًا باستخدام البريد الإلكتروني وكلمة المرور المحفوظة
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: userEmail,
+          password: userPassword,
+        );
+
+        // في حال نجاح تسجيل الدخول، يتم توجيه المستخدم إلى الصفحة الرئيسية
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      } on FirebaseAuthException catch (e) {
+        // في حال حدوث خطأ في تسجيل الدخول
+        String errorMessage = "An error occurred. Please try again.";
+        if (e.code == 'user-not-found') {
+          errorMessage = "No user found for that email.";
+        } else if (e.code == 'wrong-password') {
+          errorMessage = "Incorrect password provided.";
+        }
+
+        _showErrorMessage(errorMessage);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,25 +209,26 @@ class _LoginPage extends State<LoginPage> {
           String password = _passwordController.text;
 
           if (email.isEmpty || password.isEmpty) {
-            // عرض رسالة خطأ في حال كانت الحقول فارغة
             _showErrorMessage("Please enter both email and password.");
             return;
           }
 
           try {
-            // محاولة تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
             UserCredential userCredential = await _auth.signInWithEmailAndPassword(
               email: email,
               password: password,
             );
 
-            // في حال نجاح تسجيل الدخول
+            // حفظ بيانات المستخدم (البريد الإلكتروني وكلمة المرور) في SharedPreferences
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('userEmail', email);
+            await prefs.setString('userPassword', password);
+
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           } on FirebaseAuthException catch (e) {
-            // في حال حدوث خطأ في تسجيل الدخول
             String errorMessage = "An error occurred. Please try again.";
             if (e.code == 'user-not-found') {
               errorMessage = "No user found for that email.";
@@ -209,7 +254,6 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  // تابع لعرض رسالة الخطأ
   void _showErrorMessage(String message) {
     showDialog(
       context: context,

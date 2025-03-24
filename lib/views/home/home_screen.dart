@@ -304,15 +304,15 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_rounded), // شكل دائري أكثر حداثة
+            icon: Icon(Icons.account_circle_rounded),
             label: 'حسابي',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded), // أيقونة ممتلئة ومستديرة أكثر حداثة
+            icon: Icon(Icons.home_rounded),
             label: 'الرئيسية',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_a_photo_rounded), // أيقونة أحدث لإضافة عمل
+            icon: Icon(Icons.add_a_photo_rounded),
             label: 'إضافة عمل',
           ),
         ],
@@ -476,13 +476,12 @@ class _SanaatyBotScreenState extends State<SanaatyBotScreen> {
   final List<Map<String, String>> _messages = [];
   bool _isLoading = false;
 
-  static const String apiKey =
-      "AIzaSyApVfeRvr75btO6rEy0XoJ6OYA7IM6_vd0"; // استبدل بمفتاح API الصحيح
+  static const String apiKey = "AIzaSyApVfeRvr75btO6rEy0XoJ6OYA7IM6_vd0";
   static const String apiUrl =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey";
 
   final Map<String, List<String>> faqKeywords = {
-    "تطبيق صنايعي هو منصة إلكترونية تجمع بين أصحاب الأعمال في مجال البناء والمقاولات والباحثين عن معدات ومواد بناء.":
+    "تطبيق صنعتي هو منصة إلكترونية تجمع بين أصحاب الأعمال في مجال البناء والمقاولات والباحثين عن معدات ومواد بناء.":
         ["فكرة تطبيق صنايعي"],
     "أصحاب ورش البناء، الصنايعية، مزودو المعدات الثقيلة، والمشترين المهتمين بالتجديد والبناء.":
         ["الفئة المستهدفة"],

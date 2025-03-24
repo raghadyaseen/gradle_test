@@ -69,7 +69,7 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       backgroundColor: Colors.orange[50],
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.white,
         title: Image.asset('assets/logo2.png', height: 40),
         elevation: 2,
         centerTitle: true,
@@ -194,7 +194,7 @@ class _UserPageState extends State<UserPage> {
                                           ),
                                           SizedBox(height: 5),
                                           Text(
-                                            workDoc['title'] ?? 'No Title',
+                                            workDoc['w_name'] ?? 'No Title',
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.orange[700],

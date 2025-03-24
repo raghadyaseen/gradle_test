@@ -61,6 +61,7 @@ class _SignUpState extends State<SignUp> {
         });
 
         _showMessage("Account created successfully!");
+        
       }
     } on FirebaseAuthException catch (e) {
       _showMessage(e.message ?? "An error occurred.");

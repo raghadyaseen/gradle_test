@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gradle_test/views/home/remove_work.dart' show RemoveWork;
 import 'package:gradle_test/views/home/works_detialies.dart' show WorksDetails;
 
 class UserPagee extends StatefulWidget {
@@ -108,9 +109,38 @@ class _UserPageState extends State<UserPagee> {
                               radius: 80,
                             ),
                           ),
+
+                          //----------------------------------------------------------------------
+                          
+                          //----------------------------------------------------------------------
+                          
+                          //----------------------------------------------------------------------
+                          
+                          //----------------------------------------------------------------------
+                          
+                          //----------------------------------------------------------------------
                           Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
+                            padding: EdgeInsets.only(right: 10, bottom: 20), 
+                            alignment: Alignment.topRight, // Move the button to the top right
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RemoveWork(),
+                                  ),
+                                );
+                              },
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                              backgroundColor: Colors.orange[800], // لون خلفية الزر
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
                               color: Colors.orange[800],
                               borderRadius: BorderRadius.circular(20),

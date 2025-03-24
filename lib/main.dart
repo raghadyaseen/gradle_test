@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart'; // استيراد حزمة firebase_core
 import 'package:gradle_test/views/home/home_screen.dart';
 import 'onboarding/splash_screen.dart'; // شاشة البداية الخاصة بك
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // تأكيد تهيئة الفلاتر قبل التشغيل
@@ -18,10 +19,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sanaaty',
       debugShowCheckedModeBanner: false, // إخفاء الشريط العلوي
-      theme: ThemeData(fontFamily: 'Aljazeera.ttf' //لخط العربي
+      // theme: ThemeData(fontFamily: 'Aljazeera.ttf' //لخط العربي
 
-          ),
-      home: SplashScreen(), // شاشة البداية التي قمت بإنشائها
+      //     ),
+      theme: ThemeData(
+        textTheme: GoogleFonts.aladinTextTheme(),
+      ),
+      home: HomeScreen(), // شاشة البداية التي قمت بإنشائها
     );
   }
 }

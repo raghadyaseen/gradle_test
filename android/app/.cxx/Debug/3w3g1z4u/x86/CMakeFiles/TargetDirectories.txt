@@ -1,0 +1,2 @@
+C:/Users/Coding School/Desktop/project/gradle_test-main/android/app/.cxx/Debug/3w3g1z4u/x86/CMakeFiles/edit_cache.dir
+C:/Users/Coding School/Desktop/project/gradle_test-main/android/app/.cxx/Debug/3w3g1z4u/x86/CMakeFiles/rebuild_cache.dir
